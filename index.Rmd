@@ -1,0 +1,46 @@
+---
+title       : pdbeeR
+subtitle    : 
+author      : Paweł Piątkowski
+job         : 
+framework   : revealjs        # {io2012, html5slides, shower, dzslides, ...}
+revealjs    :
+  theme     : solarized
+  transition: none
+highlighter : highlight.js  # {highlight.js, prettify, highlight}
+hitheme     : zenburn
+widgets     : []            # {mathjax, quiz, bootstrap}
+mode        : selfcontained # {standalone, draft}
+knit        : slidify::knit2slides
+---
+
+# pdbeeR
+
+Paweł Piątkowski
+
+---
+
+## Read-And-Delete
+
+```{r setup, include=FALSE}
+library(knitr)
+library(pdbeeR)
+library(rgl)
+knitr::opts_chunk$set(echo = TRUE)
+knit_hooks$set(webgl = hook_webgl)
+```
+
+``` {r, webgl=TRUE}
+library(pdbeeR)
+pdb = read.pdb("data/1ow9_00_A.pdb")
+coord = pdb$coord
+showStructure(coord)
+```
+
+--- .class #id 
+
+## Slide 2
+
+
+
+
