@@ -1,12 +1,9 @@
 ---
 title       : pdbeeR
-subtitle    : 
+subtitle    : Stuctural bioinformatician's notebooks
 author      : Paweł Piątkowski
-job         : 
-framework   : revealjs        # {io2012, html5slides, shower, dzslides, ...}
-revealjs    :
-  theme     : solarized
-  transition: none
+job         : "@Cosi1125"
+framework   : io2012        # {io2012, html5slides, shower, dzslides, ...}
 highlighter : highlight.js  # {highlight.js, prettify, highlight}
 hitheme     : zenburn
 widgets     : []            # {mathjax, quiz, bootstrap}
@@ -14,33 +11,109 @@ mode        : selfcontained # {standalone, draft}
 knit        : slidify::knit2slides
 ---
 
-# pdbeeR
-
-Paweł Piątkowski
-
----
-
-## Read-And-Delete
-
 ```{r setup, include=FALSE}
 library(knitr)
 library(pdbeeR)
 library(rgl)
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, fig.width = 4, fig.height = 4)
 knit_hooks$set(webgl = hook_webgl)
 ```
 
-``` {r, webgl=TRUE}
-library(pdbeeR)
-pdb = read.pdb("data/1ow9_00_A.pdb")
-coord = pdb$coord
-showStructure(coord)
+![R logo](assets/img/Rlogo.png)
+
+* Functional programming language
+* Data-centric
+* Flexible
+* Great community
+
+---
+
+![ClusteRNA](assets/img/clusterna.png)
+
+---
+
+## Protein Data Bank (PDB) format
+
+```
+ATOM      1  O5'   G A   1      -7.315   6.695  -1.770  1.00  3.20           O  
+ATOM      2  C5'   G A   1      -6.027   7.312  -1.841  1.00  3.16           C  
+ATOM      3  C4'   G A   1      -5.382   7.427  -0.460  1.00  2.91           C  
+ATOM      4  O4'   G A   1      -5.995   8.462   0.314  1.00  2.96           O  
+ATOM      5  C3'   G A   1      -5.556   6.146   0.348  1.00  2.57           C  
+ATOM      6  O3'   G A   1      -4.401   5.324   0.150  1.00  2.53           O  
+ATOM      7  C2'   G A   1      -5.551   6.643   1.782  1.00  2.41           C  
+ATOM      8  O2'   G A   1      -4.218   6.743   2.298  1.00  2.39           O  
+ATOM      9  C1'   G A   1      -6.208   8.014   1.662  1.00  2.67           C  
+ATOM     10  N9    G A   1      -7.648   7.933   1.970  1.00  2.59           N  
+ATOM     11  C8    G A   1      -8.712   7.912   1.130  1.00  2.71           C  
+ATOM     12  N7    G A   1      -9.888   7.834   1.654  1.00  2.63           N  
+ATOM     13  C5    G A   1      -9.590   7.798   3.020  1.00  2.43           C  
+ATOM     14  C6    G A   1     -10.460   7.712   4.139  1.00  2.31           C  
+ATOM     15  O6    G A   1     -11.688   7.651   4.148  1.00  2.34           O  
+ATOM     16  N1    G A   1      -9.753   7.702   5.335  1.00  2.22           N  
+ATOM     17  C2    G A   1      -8.379   7.766   5.447  1.00  2.22           C  
+ATOM     18  N2    G A   1      -7.886   7.743   6.686  1.00  2.20           N  
+ATOM     19  N3    G A   1      -7.552   7.846   4.399  1.00  2.31           N  
 ```
 
---- .class #id 
+---
 
-## Slide 2
+### Before
 
+```{r, eval=FALSE}
+while (length({line = readLines(f, 1L)}) > 0) {
+  rec_name = gsub(" ", "", substring(line, 1, 6), fixed = TRUE)
+  # (...)
+}
+```
 
+### After
 
+```{r, eval=FALSE}
+lines = readLines(f, warn = FALSE)
+rec_names = gsub(" ", "", substring(lines, 1, 6), fixed = TRUE)
+shorter_rec_names = substring(rec_names, 1, 5)
+# (...)
+header_lines = cbind(lines[header_ids], rec_names[header_ids])
+crystal_lines = cbind(lines[crystal_ids], rec_names[crystal_ids])
+coord_lines = cbind(lines[coord_ids], rec_names[coord_ids])
+footer_lines = cbind(lines[footer_ids], rec_names[footer_ids])
+```
+
+---
+
+## selectRecords()
+
+```{r}
+pdb = read.pdb("data/1un6.pdb")
+fragment = selectRecords(pdb, chainID = "E", resSeq = 74:100)
+seq = getSequence(fragment)
+length(seq)
+cat(seqToFasta(seq))
+```
+
+---
+
+## showStructure()
+
+``` {r, webgl=TRUE}
+pdb = read.pdb("data/1eiy.pdb") # or fetch from PDB database
+coord = pdb$coord
+print(unique(coord$chainID))
+chainC = selectRecords(coord, chainID = "C")
+showStructure(chainC)
+```
+
+---
+
+## Similar packages:
+
+* [Bio3D](http://thegrantlab.org/bio3d/index.php) - huge, more of an analysis tool
+* [Rpdb](https://cran.r-project.org/web/packages/Rpdb/index.html) - more complex than pdbeeR
+
+--- .center
+
+![QR Code](assets/img/qrcode.png)
+
+## https://github.com/cosi1/pdbeeR
 
